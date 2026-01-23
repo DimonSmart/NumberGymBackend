@@ -25,6 +25,10 @@ public sealed class AnalyzePronunciation
         if (string.IsNullOrWhiteSpace(expectedText))
             return new BadRequestObjectResult(new { error = "Missing form field: expectedText" });
 
+        var language = form["language"].ToString();
+        if (string.IsNullOrWhiteSpace(language))
+            return new BadRequestObjectResult(new { error = "Missing form field: language" });
+
         var audioFile = form.Files.GetFile("audio") ?? form.Files.FirstOrDefault();
         if (audioFile is null)
             return new BadRequestObjectResult(new { error = "Missing form file: audio" });
@@ -44,6 +48,7 @@ public sealed class AnalyzePronunciation
             var (status, json, ct) = await speech.AnalyzeAsync(
                 ms.ToArray(),
                 audioFile.ContentType,
+                language,
                 expectedText,
                 req.HttpContext.RequestAborted);
 
@@ -56,7 +61,7 @@ public sealed class AnalyzePronunciation
         }
         catch (Exception ex)
         {
-            // Ошибка бэкенда (не Speech). Не палим ключи.
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅ Speech). пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.
             return new ObjectResult(new
             {
                 error = "Backend error",

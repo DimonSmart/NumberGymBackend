@@ -14,6 +14,7 @@ internal sealed class SpeechClient
     public async Task<(int StatusCode, string Json, string ContentType)> AnalyzeAsync(
         byte[] audioBytes,
         string? audioContentType,
+        string language,
         string expectedText,
         CancellationToken ct)
     {
@@ -24,7 +25,7 @@ internal sealed class SpeechClient
 
         var endpoint =
             $"https://{_opt.Region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1" +
-            $"?language={Uri.EscapeDataString(_opt.Locale)}&format=detailed";
+            $"?language={Uri.EscapeDataString(language)}&format=detailed";
 
         using var req = new HttpRequestMessage(HttpMethod.Post, endpoint);
         req.Headers.Add("Ocp-Apim-Subscription-Key", _opt.Key);
